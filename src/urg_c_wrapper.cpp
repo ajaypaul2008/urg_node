@@ -211,8 +211,8 @@ bool URGCWrapper::grabScan(sensor_msgs::msg::LaserScan& msg)
   }
 
   // Fill scan
-  builtin_interfaces::msg::Time stampTime = rclcpp::Time(system_time_stamp) + system_latency_ + user_latency_ + getAngularTimeOffset();
-  msg->header.stamp = stampTime;
+  builtin_interfaces::msg::Time stampTime = rclcpp::Time(static_cast<int64_t>(system_time_stamp)) + system_latency_ + user_latency_ + getAngularTimeOffset();
+  msg.header.stamp = stampTime;
 
   msg.ranges.resize(num_beams);
   if (use_intensity_)
