@@ -101,7 +101,7 @@ void UrgNode::initSetup()
   // The parameters client to catch modification of parameters
   parameters_client_ = std::make_shared<rclcpp::AsyncParametersClient>(this->shared_from_this());
 
-  this->register_param_change_callback(std::bind(&UrgNode::param_change_callback, this, std::placeholders::_1));
+  this->set_on_parameters_set_callback(std::bind(&UrgNode::param_change_callback, this, std::placeholders::_1));
 }
 
 UrgNode::~UrgNode()
@@ -243,7 +243,7 @@ void UrgNode::reconfigure(const rcl_interfaces::msg::ParameterEvent::SharedPtr e
       restart_required = true;
 
     } else {
-      RCLCPP_ERROR(this->get_logger(), "The parameter %s is not part of the reconfigurable parameters.", parameter.name);
+      RCLCPP_ERROR(this->get_logger(), "The parameter %s is not part of the reconfigurable parameters.", parameter.name.c_str());
     }
   }
 
@@ -565,7 +565,7 @@ void UrgNode::scanThread()
       calibrate_time_offset();
     }
 
-    if (!urg_ || !rclcpp::ok)
+    if (!urg_ || !rclcpp::ok())
     {
       continue;
     }
@@ -617,7 +617,7 @@ void UrgNode::scanThread()
         std::unique_lock<std::mutex> lock(lidar_mutex_);
         if (publish_multiecho_)
         {
-          const sensor_msgs::msg::MultiEchoLaserScan::SharedPtr msg(new sensor_msgs::msg::MultiEchoLaserScan());
+          sensor_msgs::msg::MultiEchoLaserScan msg;
           if (urg_->grabScan(msg))
           {
             echoes_pub_.publish(msg);
@@ -632,7 +632,7 @@ void UrgNode::scanThread()
         }
         else
         {
-          const sensor_msgs::msg::LaserScan::SharedPtr msg(new sensor_msgs::msg::LaserScan());
+          sensor_msgs::msg::LaserScan msg;
           if (urg_->grabScan(msg))
           {
             laser_pub_->publish(msg);

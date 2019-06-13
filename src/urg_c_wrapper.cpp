@@ -181,16 +181,16 @@ URGCWrapper::~URGCWrapper()
   urg_close(&urg_);
 }
 
-bool URGCWrapper::grabScan(const sensor_msgs::msg::LaserScan::SharedPtr msg)
+bool URGCWrapper::grabScan(sensor_msgs::msg::LaserScan& msg)
 {
-  msg->header.frame_id = frame_id_;
-  msg->angle_min = getAngleMin();
-  msg->angle_max = getAngleMax();
-  msg->angle_increment = getAngleIncrement();
-  msg->scan_time = getScanPeriod();
-  msg->time_increment = getTimeIncrement();
-  msg->range_min = getRangeMin();
-  msg->range_max = getRangeMax();
+  msg.header.frame_id = frame_id_;
+  msg.angle_min = getAngleMin();
+  msg.angle_max = getAngleMax();
+  msg.angle_increment = getAngleIncrement();
+  msg.scan_time = getScanPeriod();
+  msg.time_increment = getTimeIncrement();
+  msg.range_min = getRangeMin();
+  msg.range_max = getRangeMax();
 
   // Grab scan
   int num_beams = 0;
@@ -214,41 +214,41 @@ bool URGCWrapper::grabScan(const sensor_msgs::msg::LaserScan::SharedPtr msg)
   builtin_interfaces::msg::Time stampTime = rclcpp::Time(system_time_stamp) + system_latency_ + user_latency_ + getAngularTimeOffset();
   msg->header.stamp = stampTime;
 
-  msg->ranges.resize(num_beams);
+  msg.ranges.resize(num_beams);
   if (use_intensity_)
   {
-    msg->intensities.resize(num_beams);
+    msg.intensities.resize(num_beams);
   }
 
   for (int i = 0; i < num_beams; i++)
   {
     if (data_[(i) + 0] != 0)
     {
-      msg->ranges[i] = static_cast<float>(data_[i]) / 1000.0;
+      msg.ranges[i] = static_cast<float>(data_[i]) / 1000.0;
       if (use_intensity_)
       {
-        msg->intensities[i] = intensity_[i];
+        msg.intensities[i] = intensity_[i];
       }
     }
     else
     {
-      msg->ranges[i] = std::numeric_limits<float>::quiet_NaN();
+      msg.ranges[i] = std::numeric_limits<float>::quiet_NaN();
       continue;
     }
   }
   return true;
 }
 
-bool URGCWrapper::grabScan(const sensor_msgs::msg::MultiEchoLaserScan::SharedPtr msg)
+bool URGCWrapper::grabScan(sensor_msgs::msg::MultiEchoLaserScan& msg)
 {
-  msg->header.frame_id = frame_id_;
-  msg->angle_min = getAngleMin();
-  msg->angle_max = getAngleMax();
-  msg->angle_increment = getAngleIncrement();
-  msg->scan_time = getScanPeriod();
-  msg->time_increment = getTimeIncrement();
-  msg->range_min = getRangeMin();
-  msg->range_max = getRangeMax();
+  msg.header.frame_id = frame_id_;
+  msg.angle_min = getAngleMin();
+  msg.angle_max = getAngleMax();
+  msg.angle_increment = getAngleIncrement();
+  msg.scan_time = getScanPeriod();
+  msg.time_increment = getTimeIncrement();
+  msg.range_min = getRangeMin();
+  msg.range_max = getRangeMax();
 
   // Grab scan
   int num_beams = 0;
@@ -270,12 +270,12 @@ bool URGCWrapper::grabScan(const sensor_msgs::msg::MultiEchoLaserScan::SharedPtr
 
   // Fill scan (uses vector.reserve wherever possible to avoid initalization and unecessary memory expansion)
   builtin_interfaces::msg::Time stampTime = rclcpp::Time(system_time_stamp) + system_latency_ + user_latency_ + getAngularTimeOffset();
-  msg->header.stamp = stampTime;
+  msg.header.stamp = stampTime;
 
-  msg->ranges.reserve(num_beams);
+  msg.ranges.reserve(num_beams);
   if (use_intensity_)
   {
-    msg->intensities.reserve(num_beams);
+    msg.intensities.reserve(num_beams);
   }
 
   for (size_t i = 0; i < num_beams; i++)
@@ -302,10 +302,10 @@ bool URGCWrapper::grabScan(const sensor_msgs::msg::MultiEchoLaserScan::SharedPtr
         break;
       }
     }
-    msg->ranges.push_back(range_echo);
+    msg.ranges.push_back(range_echo);
     if (use_intensity_)
     {
-      msg->intensities.push_back(intensity_echo);
+      msg.intensities.push_back(intensity_echo);
     }
   }
 
@@ -836,7 +836,7 @@ bool URGCWrapper::setAngleLimitsAndCluster(double& angle_min, double& angle_max,
   return true;
 }
 
-bool URGCWrapper::setSkip(int skip)
+void URGCWrapper::setSkip(int skip)
 {
   skip_ = skip;
 }
