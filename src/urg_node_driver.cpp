@@ -72,43 +72,26 @@ UrgNode::UrgNode(const std::string & node_name)
 
 void UrgNode::initSetup()
 {
-  // Declare parameters so we can change these later.
-  this->declare_parameter<std::string>("ip_address", ip_address_);
-  this->declare_parameter<int>("ip_port", ip_port_);
-  this->declare_parameter<std::string>("laser_frame_id", laser_frame_id_);
-  this->declare_parameter<std::string>("serial_port", serial_port_);
-  this->declare_parameter<int>("serial_baud", serial_baud_);
-  this->declare_parameter<bool>("calibrate_time", calibrate_time_);
-  this->declare_parameter<bool>("publish_intensity", publish_intensity_);
-  this->declare_parameter<bool>("publish_multiecho", publish_multiecho_);
-  this->declare_parameter<int>("error_limit", error_limit_);
-  this->declare_parameter<double>("diagnostics_tolerance", diagnostics_tolerance_);
-  this->declare_parameter<double>("diagnostics_window_time", diagnostics_window_time_);
-  this->declare_parameter<bool>("get_detailed_status", detailed_status_);
-  this->declare_parameter<double>("default_user_latency", default_user_latency_);
-  this->declare_parameter<double>("angle_min", angle_min_);
-  this->declare_parameter<double>("angle_max", angle_max_);
-  this->declare_parameter<int>("skip", skip_);
-  this->declare_parameter<int>("cluster", cluster_);
-
-  // Get parameters from param file.
-  this->get_parameter("ip_address", ip_address_);
-  this->get_parameter("ip_port", ip_port_);
-  this->get_parameter("laser_frame_id", laser_frame_id_);
-  this->get_parameter("serial_port", serial_port_);
-  this->get_parameter("serial_baud", serial_baud_);
-  this->get_parameter("calibrate_time", calibrate_time_);
-  this->get_parameter("publish_intensity", publish_intensity_);
-  this->get_parameter("publish_multiecho", publish_multiecho_);
-  this->get_parameter("error_limit", error_limit_);
-  this->get_parameter("diagnostics_tolerance", diagnostics_tolerance_);
-  this->get_parameter("diagnostics_window_time", diagnostics_window_time_);
-  this->get_parameter("get_detailed_status", detailed_status_);
-  this->get_parameter("default_user_latency", default_user_latency_);
-  this->get_parameter("angle_min", angle_min_);
-  this->get_parameter("angle_max", angle_max_);
-  this->get_parameter("skip", skip_);
-  this->get_parameter("cluster", cluster_);
+  ip_address_ = this->declare_parameter<std::string>("ip_address", ip_address_);
+  ip_port_ = this->declare_parameter<int>("ip_port", ip_port_);
+  laser_frame_id_ = this->declare_parameter<std::string>("laser_frame_id", laser_frame_id_);
+  serial_port_ = this->declare_parameter<std::string>("serial_port", serial_port_);
+  serial_baud_ = this->declare_parameter<int>("serial_baud", serial_baud_);
+  calibrate_time_ = this->declare_parameter<bool>("calibrate_time", calibrate_time_);
+  publish_intensity_ = this->declare_parameter<bool>("publish_intensity", publish_intensity_);
+  publish_multiecho_ = this->declare_parameter<bool>("publish_multiecho", publish_multiecho_);
+  error_limit_ = this->declare_parameter<int>("error_limit", error_limit_);
+  diagnostics_tolerance_ = this->declare_parameter<double>("diagnostics_tolerance",
+      diagnostics_tolerance_);
+  diagnostics_window_time_ = this->declare_parameter<double>("diagnostics_window_time",
+      diagnostics_window_time_);
+  detailed_status_ = this->declare_parameter<bool>("get_detailed_status", detailed_status_);
+  default_user_latency_ = this->declare_parameter<double>("default_user_latency",
+      default_user_latency_);
+  angle_min_ = this->declare_parameter<double>("angle_min", angle_min_);
+  angle_max_ = this->declare_parameter<double>("angle_max", angle_max_);
+  skip_ = this->declare_parameter<int>("skip", skip_);
+  cluster_ = this->declare_parameter<int>("cluster", cluster_);
 
   // Set up publishers and diagnostics updaters, we only need one
   if (publish_multiecho_) {
